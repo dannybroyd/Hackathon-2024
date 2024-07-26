@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Display a map</title>
+    <meta property="og:description" content="Initialize a map in an HTML element with MapLibre GL JS." />
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js'></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        html, body, #map { height: 100%; }
+        .header {
+            background-color: transparent;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 1; /* Ensure the header is above the map */
+        }
+        .header h1 {
+            font-size: 50px;
+            text-align: left;
+            color: burlywood;
+            margin: 0; /* Remove default margin */
+            padding: 10px 0; /* Add padding if needed */
+        }
+        .marker {
+            background-color: blue;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .red-marker {
+            background-color: red;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<div class="header">
+    <h1>AudioGuard</h1>
+  </div>
+<body>
+<div id="map"></div>
+<script>
+    const map = new maplibregl.Map({
+        container: 'map', // container id
+        style: 'https://demotiles.maplibre.org/style.json', // style URL
+        center: [34.7818, 32.0853], // starting position [lng, lat] (Tel Aviv, Israel)
+        zoom: 7.5, // starting zoom
+        maplibreLogo: true
+    });
+
+    map.on('load', function() {
+        // Add the Esri satellite layer
+        map.addSource('esri-satellite', {
+            type: 'raster',
+            tiles: [
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '© Esri'
+        });
+
+        map.addLayer({
+            id: 'satellite',
+            type: 'raster',
+            source: 'esri-satellite',
+            minzoom: 0,
+            maxzoom: 22
+        });
+
+        // Add markers along the coast of Israel
+        const locations = [
+            { lng: 34.519, lat: 31.818, name: 'Marker 1' },
+            { lng: 34.596, lat: 31.925, name: 'Marker 2' },
+            { lng: 34.648, lat: 32.061, name: 'Marker 3' },
+            { lng: 34.694, lat: 32.218, name: 'Marker 4' },
+            { lng: 34.733, lat: 32.344, name: 'Marker 5' },
+            { lng: 34.761, lat: 32.464, name: 'Marker 6' },
+            { lng: 34.792, lat: 32.588, name: 'Marker 7' },
+            { lng: 34.832, lat: 32.736, name: 'Marker 8' },
+            { lng: 34.882, lat: 32.898, name: 'Marker 9' },
+            { lng: 34.494, lat: 32.050, name: 'Marker 10' },
+            { lng: 34.561, lat: 32.400, name: 'Marker 11' },
+            { lng: 34.658, lat: 32.722, name: 'Marker 12' },
+            { lng: 34.464, lat: 31.692, name: 'Marker 13' }
+
+        ];
+        locations.forEach(location => {
+            new maplibregl.Marker()
+                .setLngLat([location.lng, location.lat])
+                .setPopup(new maplibregl.Popup().setHTML(`<h3>${location.name}</h3><p>Description for ${location.name}</p>`)) // Add a popup
+                .addTo(map);    
+                    
+        });
+
+        /*new maplibregl.Marker({color: "#e50112"})
+                .setLngLat([locations[9].lng, locations[9].lat])
+                .setPopup(new maplibregl.Popup().setHTML(`<h3>${location.name}</h3><p>Description for ${location.name}</p>`)) // Add a popup
+                .addTo(map);    
+        */
+       
+    });
+
+
+    function CheckWithModel(){
+
+    }
+    let intervalId = setInterval(CheckWithModel, 5000);
+    clearInterval(intervalId);
+</script>
+</body>
+</html>
